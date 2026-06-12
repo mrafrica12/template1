@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Keep staff-only pages out of search results
+Disallow: /admin.html
+Disallow: /portal.html
+
+Sitemap: https://oceanbreezegambia.com/sitemap.xml
