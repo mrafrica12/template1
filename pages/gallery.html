@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery — Ocean Breeze Apartments | Bijilo, The Gambia</title>
+<meta name="description" content="Photo and video gallery of Ocean Breeze Luxury Apartments — interiors, exteriors, balconies and ocean views in Bijilo, The Gambia.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ocean Breeze Luxury Apartments">
+<meta property="og:title" content="Gallery — Ocean Breeze Luxury Apartments, Bijilo">
+<meta property="og:description" content="Photo and video gallery of Ocean Breeze Luxury Apartments — interiors, exteriors, balconies and ocean views in Bijilo, The Gambia.">
+<meta property="og:image" content="https://mrafrica12.github.io/template1/assets/hero/hero.webp">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ocean Breeze Luxury Apartments gallery, Bijilo The Gambia">
+<meta property="og:url" content="https://mrafrica12.github.io/template1/pages/gallery.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Gallery — Ocean Breeze Luxury Apartments, Bijilo">
+<meta name="twitter:description" content="Photo and video gallery — interiors, balconies and ocean views in Bijilo, The Gambia.">
+<meta name="twitter:image" content="https://mrafrica12.github.io/template1/assets/hero/hero.webp">
+<link rel="canonical" href="https://mrafrica12.github.io/template1/pages/gallery.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+
+<style>
+/* ── BASE ── */
+section { padding: 4rem 5vw; }
+
+/* ── NAV ── */
+.nav-back {
+  display: flex; align-items: center; gap: .45rem;
+  font-size: .72rem; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--parchment-dim);
+  text-decoration: none; transition: color .2s;
+}
+.nav-back:hover { color: var(--teal); }
+.nav-back svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ── HERO VIDEO ── */
+.video-hero {
+  position: relative;
+  width: 100%;
+  background: #000;
+  overflow: hidden;
+  max-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.video-hero video {
+  width: 100%;
+  max-height: 70vh;
+  object-fit: cover;
+  display: block;
+}
+.video-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,.45) 0%, transparent 35%, transparent 65%, rgba(0,0,0,.5) 100%);
+  pointer-events: none;
+}
+.video-hero-label {
+  position: absolute;
+  bottom: 2rem; left: 5vw;
+  z-index: 2;
+}
+.video-hero-label .section-eyebrow { color: var(--teal); margin-bottom: .4rem; }
+.video-hero-label h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 300;
+  color: #fff;
+  line-height: 1.1;
+}
+
+/* ── EDITORIAL PHOTO GRID ── */
+#photos { background: #0d0d0d; padding: 4rem 5vw 6rem; }
+.editorial-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: 240px;
+  gap: 5px;
+}
+.photo-thumb {
+  position: relative;
+  overflow: hidden;
+  background: #111;
+  cursor: pointer;
+}
+.photo-thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  filter: brightness(.78);
+  transition: transform .6s cubic-bezier(.25,.46,.45,.94), filter .5s ease;
+}
+.photo-thumb:hover img { transform: scale(1.06); filter: brightness(1); }
+.photo-thumb-label {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: .75rem 1rem;
+  font-family: 'Jost', sans-serif;
+  font-size: .6rem; font-weight: 500; letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.9);
+  background: linear-gradient(to top, rgba(0,0,0,.7) 0%, transparent 100%);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .35s ease, transform .35s ease;
+}
+.photo-thumb:hover .photo-thumb-label { opacity: 1; transform: translateY(0); }
+/* thin teal accent line on hover */
+.photo-thumb::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--teal);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .4s ease;
+}
+.photo-thumb:hover::after { transform: scaleX(1); }
+
+/* ── LIGHTBOX ── */
+#lightbox {
+  display: none;
+  position: fixed; inset: 0; z-index: 900;
+  background: rgba(0,0,0,.93);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+#lightbox.open { display: flex; }
+.lb-inner {
+  position: relative;
+  max-width: 1100px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+#lbImg {
+  max-height: 82vh;
+  max-width: 100%;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  border: 1px solid rgba(255,255,255,.08);
+  animation: lbIn .25s ease;
+}
+@keyframes lbIn { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: scale(1); } }
+.lb-caption {
+  font-size: .72rem; font-weight: 600; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--teal);
+  text-align: center;
+}
+.lb-counter {
+  font-size: .65rem; letter-spacing: .1em;
+  color: rgba(255,255,255,.35);
+  text-align: center;
+}
+.lb-close {
+  position: fixed; top: 1.2rem; right: 1.5rem;
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #fff; font-size: 1.1rem;
+  transition: background .2s;
+  z-index: 10;
+}
+.lb-close:hover { background: rgba(111,181,160,.25); }
+.lb-prev, .lb-next {
+  position: fixed; top: 50%; transform: translateY(-50%);
+  width: 48px; height: 48px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background .2s;
+  z-index: 10;
+}
+.lb-prev { left: 1rem; }
+.lb-next { right: 1rem; }
+.lb-prev:hover, .lb-next:hover { background: rgba(111,181,160,.2); }
+.lb-prev svg, .lb-next svg { width: 20px; height: 20px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .editorial-grid { grid-template-columns: repeat(6, 1fr); grid-auto-rows: 200px; }
+  /* collapse all spans to half on tablet */
+  .editorial-grid .photo-thumb[style*="span 8"]  { grid-column: span 6 !important; }
+  .editorial-grid .photo-thumb[style*="span 7"]  { grid-column: span 6 !important; }
+  .editorial-grid .photo-thumb[style*="span 5"]  { grid-column: span 3 !important; }
+  .editorial-grid .photo-thumb[style*="span 4"]  { grid-column: span 3 !important; }
+  .editorial-grid .photo-thumb[style*="span 3"]  { grid-column: span 3 !important; }
+  .editorial-grid .photo-thumb[style*="span 2"]  { grid-column: span 2 !important; }
+  .editorial-grid .photo-thumb[style*="span 12"] { grid-column: span 6 !important; }
+  .editorial-grid .photo-thumb[style*="span 6"]  { grid-column: span 3 !important; }
+}
+@media (max-width: 700px) {
+  .editorial-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 180px; gap: 3px; }
+  .editorial-grid .photo-thumb { grid-column: span 1 !important; grid-row: span 1 !important; }
+  .lb-prev { left: .4rem; }
+  .lb-next { right: .4rem; }
+  .video-hero-label h1 { font-size: 1.5rem; }
+  .lb-prev, .lb-next { width: 36px; height: 36px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo" aria-label="Ocean Breeze Luxury Apartments home">
+    <img src="../assets/logo/oceanbreeze-logo.webp" alt="Ocean Breeze Luxury Apartments" width="184" height="48" loading="lazy" decoding="async">
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html#residences">Residences</a></li>
+    <li><a href="../index.html#amenities">Amenities</a></li>
+    <li><a href="gallery.html" class="active">Gallery</a></li>
+    <li><a href="neighbourhood.html">Neighbourhood</a></li>
+    <li><a href="../admin/portal.html">Resident Portal</a></li>
+  </ul>
+  <a href="booking.html" class="btn-book">Book Now</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE DRAWER -->
+<div class="nav-drawer" id="navDrawer" role="dialog" aria-label="Navigation menu">
+  <ul>
+    <li><a href="../index.html#residences">Residences</a></li>
+    <li><a href="../index.html#amenities">Amenities</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="neighbourhood.html">Neighbourhood</a></li>
+    <li><a href="../admin/portal.html">Resident Portal</a></li>
+  </ul>
+  <a href="booking.html" class="btn-book">Book Now</a>
+</div>
+
+<!-- HERO VIDEO -->
+<div class="video-hero" style="margin-top: 72px;">
+  <video autoplay muted loop playsinline preload="metadata"
+         aria-label="Ocean Breeze luxury apartments hero video">
+    <source src="../assets/Video/ocean-breeze-tour.mp4" type="video/mp4">
+  </video>
+  <div class="video-hero-overlay" aria-hidden="true"></div>
+  <div class="video-hero-label">
+    <div class="section-eyebrow">Bijilo, The Gambia</div>
+    <h1>Ocean Breeze,<br>in motion.</h1>
+  </div>
+</div>
+
+<!-- PHOTO GALLERY -->
+<section id="photos">
+  <div class="section-eyebrow">Interior Photography</div>
+  <h2 class="section-title">Every room, every detail.</h2>
+  <p class="section-sub" style="margin-bottom: 2.5rem;">Click any image to explore full size.</p>
+
+  <div class="editorial-grid" id="photoGrid">
+
+    <div class="photo-thumb" style="grid-column:span 8;grid-row:span 2" onclick="openLightbox(0)">
+      <img src="../assets/images/penthouse/living2.webp"
+           alt="Penthouse living room" loading="lazy" decoding="async">
+      <span class="photo-thumb-label">Penthouse Living Room</span>
+    </div>
+    <div class="photo-thumb" style="grid-column:span 4" onclick="openLightbox(1)">
+      <img src="../assets/images/penthouse/kitchen.webp"
+           alt="Penthouse kitchen" loading="lazy" decoding="async">
+      <span class="photo-thumb-label">Penthouse Kitchen</span>
+    </div>
+    <div class="photo-thumb" style="grid-column:span 4" onclick="openLightbox(2)">
+      <img src="../assets/images/penthouse/bedroom.webp"
+           alt="Penthouse bedroom" loading="lazy" decoding="async">
+      <span class="photo-thumb-label">Penthouse Bedroom</span>
+    </div>
+
+    <div class="photo-thumb" style="grid-column:span 4" onclick="openLightbox(3)">
+      <img src="../assets/images/three-bedroom/living1.webp"
+           alt="Three-bedroom living room" loading="lazy" decoding="async">
+      <span class="photo-thumb-label">Three-Bedroom Living Room</span>
+    </div>
+    <div class="photo-thumb" style="grid-column:span 4" onclick="openLightbox(4)">
+      <img src="../assets/images/three-bedroom/Dining.webp"
+           alt="Three-bedroom dining area" loading="lazy" decoding="async">
+      <span class="photo-thumb-label">Three-Bedroom Dining</span>
+    </div>
+    <div class="photo-thumb" style="grid-column:span 4" onclick="openLightbox(5)">
+      <img src="../assets/images/three-bedroom/Unknown.webp"
+           alt="Three-bedroom residence interior" loading="lazy" decoding="async">
+      <span class="photo-thumb-label">Three-Bedroom Interior</span>
+    </div>
+
+    <div class="photo-thumb" style="grid-column:span 7;grid-row:span 2" onclick="openLightbox(6)">
+      <img src="../assets/images/two-bedroom/living-room.webp"
+           alt="Two-bedroom living room" loading="lazy" decoding="async">
+      <span class="photo-thumb-label">Two-Bedroom Living Room</span>
+    </div>
+    <div class="photo-thumb" style="grid-column:span 5" onclick="openLightbox(7)">
+      <img src="../assets/images/two-bedroom/living1.webp"
+           alt="Two-bedroom lounge" loading="lazy" decoding="async">
+      <span class="photo-thumb-label">Two-Bedroom Lounge</span>
+    </div>
+    <div class="photo-thumb" style="grid-column:span 5" onclick="openLightbox(8)">
+      <img src="../assets/images/two-bedroom/dining.webp"
+           alt="Two-bedroom dining area" loading="lazy" decoding="async">
+      <span class="photo-thumb-label">Two-Bedroom Dining</span>
+    </div>
+
+    <div class="photo-thumb" style="grid-column:span 12" onclick="openLightbox(9)">
+      <img src="../assets/images/one-bedroom/living-room2.webp"
+           alt="One-bedroom living room" loading="lazy" decoding="async">
+      <span class="photo-thumb-label">One-Bedroom Living Room</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Image lightbox">
+  <button class="lb-close" onclick="closeLightbox()" aria-label="Close">✕</button>
+  <button class="lb-prev" onclick="shiftLightbox(-1)" aria-label="Previous image">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <button class="lb-next" onclick="shiftLightbox(1)" aria-label="Next image">
+    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+  <div class="lb-inner">
+    <img id="lbImg" src="" alt="">
+    <div class="lb-caption" id="lbCaption"></div>
+    <div class="lb-counter" id="lbCounter"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <a href="../index.html" class="nav-logo" aria-label="Ocean Breeze home">
+      <img src="../assets/logo/oceanbreeze-logo.webp" alt="Ocean Breeze Luxury Apartments"
+           loading="lazy" decoding="async" width="184" height="48">
+    </a>
+    <p>Luxury serviced apartments on the Senegambia Strip, Bijilo, The Gambia.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Residences</h4>
+    <a href="booking.html">Atlantic Suite — 1BR</a>
+    <a href="booking.html">Bijilo Residence — 2BR</a>
+    <a href="booking.html">Senegambia Villa — 3BR</a>
+    <a href="booking.html">The Atlantic Crown — Penthouse</a>
+  </div>
+  <div class="footer-col">
+    <h4>Contact</h4>
+    <a href="#" data-whatsapp-link>WhatsApp Concierge</a>
+    <a href="mailto:oceanbreezegambia@yahoo.com">oceanbreezegambia@yahoo.com</a>
+  </div>
+  <div class="footer-col">
+    <h4>Legal</h4>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms &amp; Conditions</a>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2026 Ocean Breeze Luxury Apartments</span>
+  <span>Bijilo · The Gambia</span>
+  <a href="https://umojaserv.com/" target="_blank" rel="noopener">Site by https://umojaserv.com/</a>
+</div>
+
+<!-- WHATSAPP FAB -->
+<a href="#" data-whatsapp-link target="_blank" rel="noopener noreferrer"
+   class="fab-whatsapp" aria-label="Chat with us on WhatsApp">
+  <span class="fab-icon">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
+    </svg>
+  </span>
+  <span class="fab-text">Chat with Us</span>
+</a>
+
+<script src="../assets/js/main.js" defer></script>
+<script>
+/* ── LIGHTBOX ── */
+const PHOTOS = Array.from(document.querySelectorAll('.photo-thumb img')).map(img => ({
+  src:     img.src,
+  caption: img.closest('.photo-thumb').querySelector('.photo-thumb-label').textContent,
+}));
+
+let lbIndex = 0;
+
+function openLightbox(i) {
+  lbIndex = i;
+  renderLightbox();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function shiftLightbox(dir) {
+  lbIndex = (lbIndex + dir + PHOTOS.length) % PHOTOS.length;
+  renderLightbox();
+}
+
+function renderLightbox() {
+  const p = PHOTOS[lbIndex];
+  const img = document.getElementById('lbImg');
+  img.style.animation = 'none';
+  img.offsetHeight; // reflow
+  img.style.animation = '';
+  img.src = p.src;
+  img.alt = p.caption;
+  document.getElementById('lbCaption').textContent = p.caption;
+  document.getElementById('lbCounter').textContent = (lbIndex + 1) + ' / ' + PHOTOS.length;
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'ArrowRight') shiftLightbox(1);
+  if (e.key === 'ArrowLeft')  shiftLightbox(-1);
+  if (e.key === 'Escape')     closeLightbox();
+});
+
+// Click backdrop to close
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target === document.getElementById('lightbox')) closeLightbox();
+});
+</script>
+</body>
+</html>
