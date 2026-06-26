@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — Ocean Breeze Luxury Apartments</title>
+<meta name="description" content="Ocean Breeze staff administration — bookings, calendar, payments and guest management.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sb:240px;
+  --ch:#ffffff;--ch-mid:#f7f5f1;--ch-l:#ffffff;--ch-ll:#eeebe4;--ch-h:#f0ede7;
+  --teal:#6fb5a0;--teal-d:rgba(111,181,160,.12);--teal-b:rgba(111,181,160,.28);
+  --parch:#1a1612;--parch-d:rgba(26,22,18,.55);--parch-f:rgba(26,22,18,.35);
+  --gold:#c8a96e;--gold-d:rgba(200,169,110,.12);--gold-b:rgba(200,169,110,.28);
+  --ok:#5cb87a;--warn:#e6a23c;--err:#e06c6c;
+  --w5:rgba(0,0,0,.04);--w8:rgba(0,0,0,.08);--w12:rgba(0,0,0,.12);
+}
+html,body{height:100%;background:var(--ch);color:var(--parch);font-family:'Jost',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(111,181,160,.25);border-radius:2px}
+input,select,textarea,button{font-family:'Jost',sans-serif}
+a{text-decoration:none;color:inherit}
+
+/* ── SIDEBAR ── */
+#sidebar{position:fixed;top:0;left:0;height:100vh;width:var(--sb);background:var(--ch-mid);border-right:1px solid var(--w8);display:flex;flex-direction:column;z-index:200;transition:transform .3s}
+.sb-logo{padding:1.4rem 1.2rem 1.2rem;border-bottom:1px solid var(--w5)}
+.sb-logo-text{display:flex;align-items:center;justify-content:center;width:178px;height:56px;padding:0;background:transparent;border:0;box-shadow:none}
+.sb-logo-text img{display:block;width:100%;height:100%;object-fit:contain;opacity:.92;filter:drop-shadow(0 8px 18px rgba(0,0,0,.28))}
+.sb-tag{font-size:.58rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--parch-f);margin-top:.15rem}
+.sb-nav{flex:1;padding:1rem 0;overflow-y:auto}
+.sb-item{display:flex;align-items:center;gap:.7rem;padding:.65rem 1.2rem;font-size:.77rem;font-weight:500;letter-spacing:.05em;color:var(--parch-d);cursor:pointer;transition:background .15s,color .15s;border-left:2px solid transparent;user-select:none}
+.sb-item:hover{background:var(--w5);color:var(--parch)}
+.sb-item.active{background:rgba(111,181,160,.08);color:var(--teal);border-left-color:var(--teal)}
+.sb-item svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.sb-sep{height:1px;background:var(--w5);margin:.5rem 1.2rem}
+.sb-user{padding:1rem 1.2rem;border-top:1px solid var(--w8);display:flex;align-items:center;gap:.65rem}
+.sb-av{width:32px;height:32px;border-radius:50%;background:rgba(111,181,160,.18);border:1px solid var(--teal-b);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:600;color:var(--teal);flex-shrink:0}
+.sb-uname{font-size:.78rem;font-weight:500;color:var(--parch)}
+.sb-urole{font-size:.62rem;color:var(--parch-f)}
+
+/* ── OVERLAY ── */
+#sbOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:190;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+
+/* ── MAIN ── */
+#main{margin-left:var(--sb);min-height:100vh}
+.top-bar{display:none;position:sticky;top:0;z-index:150;height:54px;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,0,0,.08);align-items:center;justify-content:space-between;padding:0 1.2rem;color:#1a1612}
+.hb{display:flex;flex-direction:column;gap:4.5px;cursor:pointer;background:none;border:none;padding:4px}
+.hb span{display:block;width:20px;height:1.5px;background:var(--parch)}
+.top-logo{display:flex;align-items:center;justify-content:center;width:136px;height:36px;padding:0;background:transparent;border:0}
+.top-logo img{display:block;width:100%;height:100%;object-fit:contain;opacity:.92;filter:drop-shadow(0 7px 16px rgba(0,0,0,.28))}
+
+.page-head{padding:1.8rem 2rem 1.2rem;border-bottom:1px solid var(--w5);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.page-ey{font-size:.6rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem}
+.page-ti{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;color:var(--parch)}
+.sec-body{padding:1.6rem 2rem}
+
+.portal-sec{display:none}
+.portal-sec.active{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--w8);border:1px solid var(--w8);margin-bottom:1.8rem}
+.stat-card{background:var(--ch-l);padding:1.4rem;position:relative;overflow:hidden;cursor:default}
+.stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.stat-card.c-teal::after{background:var(--teal);opacity:.5}
+.stat-card.c-gold::after{background:var(--gold);opacity:.5}
+.stat-card.c-warn::after{background:var(--warn);opacity:.6}
+.stat-card.c-err::after{background:var(--err);opacity:.5}
+.stat-lbl{font-size:.6rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--parch-f);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+.stat-lbl svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:300;color:var(--parch);line-height:1.1}
+.stat-sub{font-size:.68rem;color:var(--parch-f);margin-top:.3rem}
+.stat-delta{font-size:.65rem;font-weight:500;margin-top:.4rem}
+.delta-up{color:var(--ok)}.delta-dn{color:var(--err)}
+
+/* ── CONTROLS ── */
+.controls-row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-bottom:1.2rem}
+.ctrl-search{flex:1;min-width:180px;position:relative}
+.ctrl-search input{width:100%;background:var(--ch-l);border:1px solid var(--w8);outline:none;color:var(--parch);font-size:.82rem;font-weight:300;padding:.65rem 1rem .65rem 2.4rem;transition:border-color .2s}
+.ctrl-search input:focus{border-color:var(--teal)}
+.ctrl-search svg{position:absolute;left:.7rem;top:50%;transform:translateY(-50%);width:14px;height:14px;stroke:var(--parch-f);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.ctrl-select,.ctrl-input{background:var(--ch-l);border:1px solid var(--w8);outline:none;color:var(--parch);font-size:.8rem;font-weight:300;padding:.65rem 1rem;-webkit-appearance:none;cursor:pointer;transition:border-color .2s}
+.ctrl-select:focus,.ctrl-input:focus{border-color:var(--teal)}
+.ctrl-select option{background:var(--ch-l)}
+.ctrl-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.65rem 1.2rem;font-size:.75rem;font-weight:500;letter-spacing:.08em;cursor:pointer;transition:all .18s;border:none;white-space:nowrap}
+.ctrl-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-teal{background:var(--teal);color:var(--ch)}.btn-teal:hover{background:#88c9b4}
+.btn-outline{background:none;color:var(--parch-d);border:1px solid var(--w8)}.btn-outline:hover{border-color:var(--teal-b);color:var(--teal)}
+.btn-sm{padding:.45rem .9rem;font-size:.68rem}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--w8)}
+table{width:100%;border-collapse:collapse;min-width:900px}
+thead tr{border-bottom:1px solid var(--w12)}
+th{font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--parch-f);padding:.8rem 1rem;text-align:left;white-space:nowrap;cursor:pointer;user-select:none;transition:color .15s}
+th:hover{color:var(--teal)}
+th.sort-asc::after{content:' ↑'}th.sort-desc::after{content:' ↓'}
+td{padding:.8rem 1rem;font-size:.8rem;color:var(--parch-d);border-bottom:1px solid var(--w5);vertical-align:middle;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr.tbl-row{transition:background .15s}
+tr.tbl-row:hover td{background:var(--w5)}
+tr.overdue-row td{background:rgba(224,108,108,.04)}
+tr.overdue-row:hover td{background:rgba(224,108,108,.08)}
+.ref-cell{font-family:'Cormorant Garamond',serif;font-size:.95rem;color:var(--parch);font-weight:400}
+.guest-cell{font-weight:400;color:var(--parch)}
+.amount-cell{font-weight:500;color:var(--parch)}
+
+/* Status badges */
+.badge{display:inline-block;font-size:.58rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:.18rem .55rem;white-space:nowrap}
+.b-confirmed{background:rgba(111,181,160,.12);color:var(--teal);border:1px solid rgba(111,181,160,.25)}
+.b-pending{background:rgba(230,162,60,.12);color:var(--warn);border:1px solid rgba(230,162,60,.25)}
+.b-cancelled{background:rgba(224,108,108,.1);color:var(--err);border:1px solid rgba(224,108,108,.2)}
+.b-completed{background:rgba(92,184,122,.1);color:var(--ok);border:1px solid rgba(92,184,122,.2)}
+.b-paid{background:rgba(92,184,122,.1);color:var(--ok);border:1px solid rgba(92,184,122,.2)}
+.b-overdue{background:rgba(224,108,108,.15);color:var(--err);border:1px solid rgba(224,108,108,.3);animation:pulse-border 2s infinite}
+@keyframes pulse-border{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 2px rgba(224,108,108,.2)}}
+.b-partial{background:rgba(230,162,60,.12);color:var(--warn);border:1px solid rgba(230,162,60,.25)}
+.b-refunded{background:var(--w5);color:var(--parch-f);border:1px solid var(--w8)}
+
+/* Action buttons */
+.act-btns{display:flex;gap:.35rem}
+.act-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .65rem;font-size:.62rem;font-weight:500;letter-spacing:.07em;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.act-btn svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.act-confirm{background:rgba(111,181,160,.12);color:var(--teal);border:1px solid rgba(111,181,160,.2)}.act-confirm:hover{background:rgba(111,181,160,.22)}
+.act-cancel{background:rgba(224,108,108,.1);color:var(--err);border:1px solid rgba(224,108,108,.2)}.act-cancel:hover{background:rgba(224,108,108,.2)}
+.act-extend{background:rgba(200,169,110,.1);color:var(--gold);border:1px solid rgba(200,169,110,.2)}.act-extend:hover{background:rgba(200,169,110,.2)}
+.act-view{background:var(--w5);color:var(--parch-d);border:1px solid var(--w8)}.act-view:hover{border-color:var(--teal-b);color:var(--teal)}
+
+.tbl-empty{text-align:center;padding:3rem 1rem}
+.tbl-empty-ico{font-size:2rem;opacity:.2;margin-bottom:.75rem}
+.tbl-empty-txt{font-size:.82rem;color:var(--parch-f)}
+
+/* ── CALENDAR ── */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+.cal-nav{display:flex;gap:.5rem}
+.cal-nav-btn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:none;border:1px solid var(--w8);cursor:pointer;color:var(--parch-d);transition:all .18s}
+.cal-nav-btn:hover{border-color:var(--teal-b);color:var(--teal)}
+.cal-nav-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cal-month-lbl{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--parch)}
+.cal-legend{display:flex;gap:1.2rem;flex-wrap:wrap}
+.cal-leg-item{display:flex;align-items:center;gap:.4rem;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--parch-f)}
+.cal-leg-dot{width:10px;height:10px;border-radius:50%}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--w8);border:1px solid var(--w8)}
+.cal-wd{background:var(--ch-mid);padding:.55rem;font-size:.6rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--parch-f);text-align:center}
+.cal-day{background:var(--ch-l);min-height:80px;padding:.45rem;transition:background .15s}
+.cal-day:hover{background:var(--ch-ll)}
+.cal-day-num{font-size:.72rem;font-weight:500;color:var(--parch-f);margin-bottom:.3rem}
+.cal-day.today .cal-day-num{color:var(--teal);font-weight:600}
+.cal-day.other-month{background:var(--ch-mid)}
+.cal-day.other-month .cal-day-num{opacity:.3}
+.cal-booking{font-size:.58rem;padding:.12rem .4rem;margin-bottom:2px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:opacity .15s}
+.cal-booking:hover{opacity:.8}
+.cal-b-confirmed{background:rgba(111,181,160,.25);color:var(--teal);border-left:2px solid var(--teal)}
+.cal-b-pending{background:rgba(230,162,60,.2);color:var(--warn);border-left:2px solid var(--warn)}
+.cal-b-cancelled{background:rgba(224,108,108,.1);color:rgba(224,108,108,.7);border-left:2px solid rgba(224,108,108,.4);text-decoration:line-through}
+.cal-b-completed{background:rgba(92,184,122,.12);color:var(--ok);border-left:2px solid rgba(92,184,122,.4)}
+
+/* ── PAYMENT SECTION ── */
+.pay-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--w8);border:1px solid var(--w8);margin-bottom:1.5rem}
+.pay-sum-cell{background:var(--ch-l);padding:1.2rem}
+.pay-sum-lbl{font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--parch-f);margin-bottom:.4rem}
+.pay-sum-val{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--parch)}
+
+/* ── SECTION CARD ── */
+.sc{background:var(--ch-l);border:1px solid var(--w8);padding:1.5rem;margin-bottom:1.2rem}
+.sc-title{font-size:.62rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);margin-bottom:1.2rem;display:flex;align-items:center;justify-content:space-between}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:400;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--ch-l);border:1px solid var(--w12);width:100%;max-height:90vh;overflow-y:auto;position:relative;animation:fadeUp .3s ease}
+.modal-sm{max-width:480px}
+.modal-lg{max-width:680px}
+.modal-head{padding:1.4rem 1.6rem 1rem;border-bottom:1px solid var(--w8);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;color:var(--parch)}
+.modal-close{width:28px;height:28px;background:none;border:1px solid var(--w8);cursor:pointer;color:var(--parch-d);font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:all .18s}
+.modal-close:hover{border-color:var(--err);color:var(--err)}
+.modal-body{padding:1.4rem 1.6rem}
+.modal-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem .75rem;margin-bottom:1rem}
+.modal-field{display:flex;flex-direction:column;gap:.3rem}
+.modal-field.full{grid-column:1/-1}
+.modal-lbl{font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+.modal-val{font-size:.84rem;color:var(--parch);font-weight:400}
+.modal-val.muted{color:var(--parch-d)}
+.modal-input,.modal-textarea{background:var(--ch-mid);border:1px solid var(--w8);outline:none;color:var(--parch);font-size:.84rem;font-weight:300;padding:.7rem .9rem;width:100%;transition:border-color .2s}
+.modal-input:focus,.modal-textarea:focus{border-color:var(--teal)}
+.modal-textarea{resize:vertical;min-height:80px}
+.modal-foot{padding:1rem 1.6rem;border-top:1px solid var(--w8);display:flex;gap:.65rem;justify-content:flex-end}
+
+/* Detail rows */
+.drow{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--w5);font-size:.82rem}
+.drow:last-child{border-bottom:none}
+.drow-lbl{color:var(--parch-f)}
+.drow-val{color:var(--parch);font-weight:400;text-align:right}
+.drow-val.teal{color:var(--teal)}
+.drow-val.gold{color:var(--gold)}
+.drow-val.err{color:var(--err)}
+
+/* Contact buttons */
+.contact-btns{display:flex;gap:.5rem;margin-top:.75rem}
+.cbtn{flex:1;display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.65rem;font-size:.72rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:none;transition:all .18s;text-decoration:none}
+.cbtn svg{width:13px;height:13px;fill:currentColor}
+.cbtn-email{background:var(--teal-d);color:var(--teal);border:1px solid var(--teal-b)}.cbtn-email:hover{background:rgba(111,181,160,.25)}
+.cbtn-wa{background:rgba(37,211,102,.1);color:#25d366;border:1px solid rgba(37,211,102,.25)}.cbtn-wa:hover{background:rgba(37,211,102,.2)}
+
+/* Extend stay calc */
+.extend-calc{background:var(--ch-mid);border:1px solid var(--w8);padding:1.1rem;margin:.8rem 0}
+.extend-row{display:flex;justify-content:space-between;font-size:.8rem;padding:.25rem 0;color:var(--parch-d)}
+.extend-row.total{font-weight:500;color:var(--parch);border-top:1px solid var(--w8);padding-top:.6rem;margin-top:.4rem}
+
+/* Toast */
+#toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:600;display:flex;flex-direction:column;gap:.5rem}
+.toast-msg{background:var(--ch-l);border:1px solid var(--w12);padding:.75rem 1.1rem;font-size:.78rem;color:var(--parch);display:flex;align-items:center;gap:.6rem;animation:fadeUp .3s ease;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.toast-msg.t-ok{border-color:rgba(92,184,122,.3);color:var(--ok)}
+.toast-msg.t-err{border-color:rgba(224,108,108,.3);color:var(--err)}
+
+/* ── MAINTENANCE ── */
+.maint-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--w8);border:1px solid var(--w8);margin-bottom:1.5rem}
+.maint-stat{background:var(--ch-l);padding:1.2rem}
+.maint-stat-lbl{font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--parch-f);margin-bottom:.4rem}
+.maint-stat-val{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--parch)}
+.b-inprog{background:rgba(230,162,60,.12);color:var(--warn);border:1px solid rgba(230,162,60,.25)}
+.b-onhold{background:rgba(175,82,222,.1);color:#af52de;border:1px solid rgba(175,82,222,.2)}
+.b-resolved{background:rgba(92,184,122,.1);color:var(--ok);border:1px solid rgba(92,184,122,.2)}
+.b-urgent{background:rgba(224,108,108,.15);color:var(--err);border:1px solid rgba(224,108,108,.3)}
+.b-normal{background:rgba(230,162,60,.12);color:var(--warn);border:1px solid rgba(230,162,60,.25)}
+.b-low{background:var(--w5);color:var(--parch-f);border:1px solid var(--w8)}
+
+/* ── ADD MAINTENANCE MODAL ── */
+.modal-select{background:var(--ch-mid);border:1px solid var(--w8);outline:none;color:var(--parch);font-size:.84rem;font-weight:300;padding:.7rem .9rem;width:100%;-webkit-appearance:none;cursor:pointer;transition:border-color .2s}
+.modal-select:focus{border-color:var(--teal)}
+
+/* ── LOGIN OVERLAY ── */
+#loginOverlay{position:fixed;inset:0;background:#1a1612;z-index:999;display:flex;align-items:center;justify-content:center}
+.login-box{width:360px;max-width:90vw}
+.login-logo{display:flex;justify-content:center;margin-bottom:2rem}
+.login-logo img{width:180px;height:48px;object-fit:contain;filter:brightness(1.1)}
+.login-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;color:#fff;text-align:center;margin-bottom:.35rem}
+.login-sub{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);text-align:center;margin-bottom:2rem}
+.login-field{margin-bottom:1rem}
+.login-lbl{font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);display:block;margin-bottom:.4rem}
+.login-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);outline:none;color:#fff;font-family:'Jost',sans-serif;font-size:.9rem;font-weight:300;padding:.85rem 1rem;transition:border-color .2s}
+.login-input:focus{border-color:var(--teal)}
+.login-btn{width:100%;padding:1rem;background:var(--teal);color:#fff;font-family:'Jost',sans-serif;font-size:.8rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;border:none;cursor:pointer;margin-top:.5rem;transition:background .2s}
+.login-btn:hover{background:#88c9b4}
+.login-err{font-size:.75rem;color:var(--err);text-align:center;margin-top:.75rem;min-height:1rem}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  #sidebar{transform:translateX(-100%)}
+  #sidebar.open{transform:translateX(0)}
+  #main{margin-left:0}
+  .top-bar{display:flex}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .pay-summary{grid-template-columns:repeat(2,1fr)}
+  .modal-row{grid-template-columns:1fr}
+  .modal-field.full{grid-column:1}
+  .sec-body{padding:1rem 1rem}
+  .page-head{padding:1.2rem 1rem .9rem}
+}
+@media(max-width:560px){
+  .stat-grid{grid-template-columns:1fr}
+  .pay-summary{grid-template-columns:1fr}
+  .controls-row{flex-direction:column}
+  .ctrl-search{min-width:0}
+}
+</style>
+</head>
+<body>
+
+<!-- ════ SIDEBAR ════ -->
+<aside id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-text">
+      <img src="../assets/logo/oceanbreeze-logo.webp" alt="Ocean Breeze Luxury Apartments" width="184" height="48" loading="lazy" decoding="async">
+    </div>
+    <div class="sb-tag">Staff Admin Portal</div>
+  </div>
+  <nav class="sb-nav" id="sbNav">
+    <div class="sb-item active" data-sec="overview">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Overview
+    </div>
+    <div class="sb-item" data-sec="bookings">
+      <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+      Bookings
+    </div>
+    <div class="sb-item" data-sec="calendar">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Calendar
+    </div>
+    <div class="sb-item" data-sec="payments">
+      <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Payments
+    </div>
+    <div class="sb-item" data-sec="maintenance">
+      <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      Maintenance
+    </div>
+    <div class="sb-item" data-sec="settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </div>
+    <div class="sb-sep"></div>
+    <a class="sb-item" href="../index.html" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Public Site
+    </a>
+    <a class="sb-item" href="../pages/booking.html" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Booking Page
+    </a>
+  </nav>
+  <div class="sb-user">
+    <div class="sb-av">AM</div>
+    <div>
+      <div class="sb-uname">Admin Manager</div>
+      <div class="sb-urole">Ocean Breeze · Bijilo</div>
+    </div>
+  </div>
+</aside>
+
+<div id="sbOverlay" onclick="closeSb()"></div>
+
+<!-- ════ MAIN ════ -->
+<div id="main">
+  <div class="top-bar" id="topBar">
+    <button class="hb" onclick="toggleSb()"><span></span><span></span><span></span></button>
+    <div class="top-logo">
+      <img src="../assets/logo/oceanbreeze-logo.webp" alt="Ocean Breeze Luxury Apartments" width="184" height="48" loading="lazy" decoding="async">
+    </div>
+    <div style="width:28px"></div>
+  </div>
+
+  <!-- ── OVERVIEW ── -->
+  <div class="portal-sec active" id="sec-overview">
+    <div class="page-head">
+      <div><div class="page-ey">Admin</div><div class="page-ti">Dashboard Overview</div></div>
+      <div style="font-size:.72rem;color:var(--parch-f)" id="overviewDate"></div>
+    </div>
+    <div class="sec-body">
+      <div class="stat-grid" id="statsGrid"></div>
+      <!-- Quick recent activity -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem">
+        <div class="sc">
+          <div class="sc-title">
+            Recent Bookings
+            <span onclick="navTo('bookings')" style="cursor:pointer;font-size:.62rem;color:var(--teal);font-weight:400;letter-spacing:.08em">View all →</span>
+          </div>
+          <div id="recentBookings"></div>
+        </div>
+        <div class="sc">
+          <div class="sc-title">
+            Payment Alerts
+            <span onclick="navTo('payments')" style="cursor:pointer;font-size:.62rem;color:var(--teal);font-weight:400;letter-spacing:.08em">View all →</span>
+          </div>
+          <div id="paymentAlerts"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BOOKINGS ── -->
+  <div class="portal-sec" id="sec-bookings">
+    <div class="page-head">
+      <div><div class="page-ey">Management</div><div class="page-ti">Bookings</div></div>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <button class="ctrl-btn btn-outline" onclick="refreshData()" title="Reload data from Google Sheets">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Refresh
+        </button>
+        <div class="ctrl-btn btn-teal" onclick="exportCSV()">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </div>
+      </div>
+    </div>
+    <div class="sec-body">
+      <div class="controls-row">
+        <div class="ctrl-search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="searchInp" placeholder="Search guest name or booking ref…" oninput="renderTable()">
+        </div>
+        <select class="ctrl-select" id="statusFilter" onchange="renderTable()">
+          <option value="">All Statuses</option>
+          <option>Confirmed</option><option>Pending</option>
+          <option>Cancelled</option><option>Completed</option>
+        </select>
+        <input type="date" class="ctrl-input" id="dateFrom" onchange="renderTable()" title="Check-in from">
+        <input type="date" class="ctrl-input" id="dateTo" onchange="renderTable()" title="Check-in to">
+        <button class="ctrl-btn btn-outline" onclick="clearFilters()">Clear</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th onclick="sortBy('ref')">Ref</th>
+              <th onclick="sortBy('guest')">Guest</th>
+              <th onclick="sortBy('aptName')">Apartment</th>
+              <th onclick="sortBy('checkIn')">Check-in</th>
+              <th onclick="sortBy('checkOut')">Check-out</th>
+              <th onclick="sortBy('nights')">Nights</th>
+              <th onclick="sortBy('total')">Total</th>
+              <th onclick="sortBy('status')">Status</th>
+              <th onclick="sortBy('payment')">Payment</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="bookingsTbody"></tbody>
+        </table>
+      </div>
+      <div style="margin-top:.8rem;font-size:.7rem;color:var(--parch-f)" id="tableCount"></div>
+    </div>
+  </div>
+
+  <!-- ── CALENDAR ── -->
+  <div class="portal-sec" id="sec-calendar">
+    <div class="page-head">
+      <div><div class="page-ey">Occupancy</div><div class="page-ti">Calendar View</div></div>
+    </div>
+    <div class="sec-body">
+      <div class="cal-header">
+        <div class="cal-nav">
+          <button class="cal-nav-btn" onclick="calPrev()">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="cal-month-lbl" id="calMonthLbl"></div>
+          <button class="cal-nav-btn" onclick="calNext()">
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <div class="cal-legend">
+          <div class="cal-leg-item"><div class="cal-leg-dot" style="background:var(--teal)"></div>Confirmed</div>
+          <div class="cal-leg-item"><div class="cal-leg-dot" style="background:var(--warn)"></div>Pending</div>
+          <div class="cal-leg-item"><div class="cal-leg-dot" style="background:var(--err)"></div>Cancelled</div>
+          <div class="cal-leg-item"><div class="cal-leg-dot" style="background:var(--ok)"></div>Completed</div>
+        </div>
+      </div>
+      <div id="calGrid"></div>
+    </div>
+  </div>
+
+  <!-- ── PAYMENTS ── -->
+  <div class="portal-sec" id="sec-payments">
+    <div class="page-head">
+      <div><div class="page-ey">Finance</div><div class="page-ti">Payment Tracking</div></div>
+      <button class="ctrl-btn btn-teal" onclick="exportCSV()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export CSV
+      </button>
+    </div>
+    <div class="sec-body">
+      <div class="pay-summary" id="paySummary"></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Booking Ref</th><th>Guest</th><th>Apartment</th>
+              <th>Check-in</th><th>Total</th><th>Payment Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="payTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- ── MAINTENANCE ── -->
+  <div class="portal-sec" id="sec-maintenance">
+    <div class="page-head">
+      <div><div class="page-ey">Property</div><div class="page-ti">Maintenance</div></div>
+      <button class="ctrl-btn btn-teal" onclick="openModal('addMaintModal')">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Log Request
+      </button>
+    </div>
+    <div class="sec-body">
+      <div class="maint-grid" id="maintStats"></div>
+      <div class="controls-row">
+        <div class="ctrl-search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="maintSearch" placeholder="Search unit or description…" oninput="renderMaintenance()">
+        </div>
+        <select class="ctrl-select" id="maintStatus" onchange="renderMaintenance()">
+          <option value="">All Statuses</option>
+          <option>Pending</option><option>In Progress</option>
+          <option>Resolved</option><option>On Hold</option>
+        </select>
+        <select class="ctrl-select" id="maintUnit" onchange="renderMaintenance()">
+          <option value="">All Units</option>
+          <option>Atlantic Suite (1BR)</option>
+          <option>Bijilo Residence (2BR)</option>
+          <option>Senegambia Villa (3BR)</option>
+          <option>The Atlantic Crown (PH)</option>
+          <option>Common Area</option>
+          <option>Pool</option>
+        </select>
+        <button class="ctrl-btn btn-outline" onclick="clearMaintFilters()">Clear</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th onclick="sortMaint('ref')">Ref</th>
+              <th onclick="sortMaint('dateLogged')">Date</th>
+              <th onclick="sortMaint('unit')">Unit</th>
+              <th onclick="sortMaint('category')">Category</th>
+              <th>Description</th>
+              <th onclick="sortMaint('priority')">Priority</th>
+              <th onclick="sortMaint('status')">Status</th>
+              <th>Assigned To</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="maintTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SETTINGS ── -->
+  <div class="portal-sec" id="sec-settings">
+    <div class="page-head">
+      <div><div class="page-ey">Admin</div><div class="page-ti">Settings</div></div>
+    </div>
+    <div class="sec-body">
+
+      <!-- API Connection -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-head">API Connection</div>
+        <div style="padding:1.2rem 1.4rem">
+          <div style="font-size:.72rem;color:var(--parch-f);margin-bottom:.5rem;letter-spacing:.06em;text-transform:uppercase">Apps Script Web App URL</div>
+          <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap">
+            <input id="apiUrlField" type="text" value="" readonly
+              style="flex:1;min-width:0;font-size:.72rem;font-family:monospace;padding:.55rem .75rem;background:var(--ch-mid);border:1px solid var(--w8);color:var(--parch-d);border-radius:2px;outline:none">
+            <button class="ctrl-btn btn-teal" onclick="testApiConnection()" style="flex-shrink:0">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Test Connection
+            </button>
+          </div>
+          <div id="connStatus" style="margin-top:.75rem;font-size:.78rem;line-height:1.5"></div>
+        </div>
+      </div>
+
+      <!-- Property Info -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-head">Property</div>
+        <div style="padding:1.2rem 1.4rem;display:grid;grid-template-columns:1fr 1fr;gap:.75rem 2rem">
+          <div><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--parch-f)">Property Name</div><div style="font-size:.88rem;color:var(--parch-d);margin-top:.2rem">Ocean Breeze Luxury Apartments</div></div>
+          <div><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--parch-f)">Location</div><div style="font-size:.88rem;color:var(--parch-d);margin-top:.2rem">Senegambia Strip, Bijilo, The Gambia</div></div>
+          <div><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--parch-f)">Phone / WhatsApp</div><div style="font-size:.88rem;color:var(--parch-d);margin-top:.2rem">WhatsApp Concierge</div></div>
+          <div><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--parch-f)">Email</div><div style="font-size:.88rem;color:var(--parch-d);margin-top:.2rem">oceanbreezegambia@yahoo.com</div></div>
+        </div>
+      </div>
+
+      <!-- Rates -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-head">Nightly Rates</div>
+        <div style="padding:1.2rem 1.4rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem">
+          <div style="background:var(--ch-mid);padding:.8rem 1rem;border-left:3px solid var(--teal)"><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--parch-f)">Atlantic Suite — 1BR</div><div style="font-size:1.1rem;color:var(--teal);font-weight:500;margin-top:.25rem">$120 / night</div></div>
+          <div style="background:var(--ch-mid);padding:.8rem 1rem;border-left:3px solid var(--teal)"><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--parch-f)">Bijilo Residence — 2BR</div><div style="font-size:1.1rem;color:var(--teal);font-weight:500;margin-top:.25rem">$180 / night</div></div>
+          <div style="background:var(--ch-mid);padding:.8rem 1rem;border-left:3px solid var(--teal)"><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--parch-f)">Senegambia Villa — 3BR</div><div style="font-size:1.1rem;color:var(--teal);font-weight:500;margin-top:.25rem">$250 / night</div></div>
+          <div style="background:var(--ch-mid);padding:.8rem 1rem;border-left:3px solid var(--gold)"><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--parch-f)">The Atlantic Crown — PH</div><div style="font-size:1.1rem;color:var(--gold);font-weight:500;margin-top:.25rem">$350 / night</div></div>
+        </div>
+      </div>
+
+      <!-- Policies -->
+      <div class="card">
+        <div class="card-head">Policies</div>
+        <div style="padding:1.2rem 1.4rem;display:grid;grid-template-columns:1fr 1fr;gap:.75rem 2rem">
+          <div><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--parch-f)">Check-in</div><div style="font-size:.88rem;color:var(--parch-d);margin-top:.2rem">From 2:00 PM (GMT)</div></div>
+          <div><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--parch-f)">Check-out</div><div style="font-size:.88rem;color:var(--parch-d);margin-top:.2rem">By 11:00 AM (GMT)</div></div>
+          <div><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--parch-f)">Cancellation</div><div style="font-size:.88rem;color:var(--parch-d);margin-top:.2rem">Free up to 14 days · 50% 7–14 days</div></div>
+          <div><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--parch-f)">Deposit</div><div style="font-size:.88rem;color:var(--parch-d);margin-top:.2rem">30% to hold booking</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ════ GUEST DETAILS MODAL ════ -->
+<div class="modal-overlay" id="guestModal">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <div>
+        <div class="page-ey" id="gm-ref" style="margin-bottom:.2rem"></div>
+        <div class="modal-title" id="gm-name"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal('guestModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+        <div>
+          <div style="font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--parch-f);margin-bottom:.75rem">Booking Details</div>
+          <div id="gm-details"></div>
+        </div>
+        <div>
+          <div style="font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--parch-f);margin-bottom:.75rem">Guest Info</div>
+          <div id="gm-guest"></div>
+          <div class="contact-btns" id="gm-contacts"></div>
+        </div>
+      </div>
+      <div style="margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--w8)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div>
+            <div style="font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--parch-f);margin-bottom:.5rem">Special Requests</div>
+            <div id="gm-requests" style="font-size:.82rem;color:var(--parch-d);line-height:1.6"></div>
+          </div>
+          <div>
+            <div style="font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:.5rem">Admin Notes (Private)</div>
+            <textarea class="modal-textarea" id="gm-notes" placeholder="Internal notes — not visible to guest…"></textarea>
+            <button class="ctrl-btn btn-teal btn-sm" style="margin-top:.5rem" onclick="saveNotes()">Save Notes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="ctrl-btn btn-outline" onclick="closeModal('guestModal')">Close</button>
+      <button class="ctrl-btn btn-teal" id="gm-confirm-btn" onclick="confirmFromModal()">✅ Confirm Booking</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ EXTEND STAY MODAL ════ -->
+<div class="modal-overlay" id="extendModal">
+  <div class="modal modal-sm">
+    <div class="modal-head">
+      <div class="modal-title">Extend Stay</div>
+      <button class="modal-close" onclick="closeModal('extendModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="extend-info" style="margin-bottom:1rem"></div>
+      <div class="modal-field" style="margin-bottom:1rem">
+        <label class="modal-lbl">New Check-out Date</label>
+        <input type="date" class="modal-input" id="newCheckout" onchange="calcExtend()">
+      </div>
+      <div class="extend-calc" id="extendCalc"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="ctrl-btn btn-outline" onclick="closeModal('extendModal')">Cancel</button>
+      <button class="ctrl-btn btn-teal" id="extendConfirmBtn" onclick="confirmExtend()">Confirm Extension</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ CONFIRM ACTION MODAL ════ -->
+<div class="modal-overlay" id="actionModal">
+  <div class="modal modal-sm">
+    <div class="modal-head">
+      <div class="modal-title" id="actionTitle">Confirm Action</div>
+      <button class="modal-close" onclick="closeModal('actionModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="actionMsg" style="font-size:.84rem;color:var(--parch-d);line-height:1.7"></p>
+    </div>
+    <div class="modal-foot">
+      <button class="ctrl-btn btn-outline" onclick="closeModal('actionModal')">Cancel</button>
+      <button class="ctrl-btn btn-teal" id="actionConfirmBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ ADD MAINTENANCE MODAL ════ -->
+<div class="modal-overlay" id="addMaintModal">
+  <div class="modal modal-sm">
+    <div class="modal-head">
+      <div class="modal-title">Log Maintenance Request</div>
+      <button class="modal-close" onclick="closeModal('addMaintModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-row">
+        <div class="modal-field">
+          <label class="modal-lbl">Unit</label>
+          <select class="modal-select" id="am-unit">
+            <option value="">Select unit…</option>
+            <option>Atlantic Suite (1BR)</option>
+            <option>Bijilo Residence (2BR)</option>
+            <option>Senegambia Villa (3BR)</option>
+            <option>The Atlantic Crown (PH)</option>
+            <option>Common Area</option>
+            <option>Pool</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label class="modal-lbl">Category</label>
+          <select class="modal-select" id="am-cat">
+            <option value="">Select…</option>
+            <option>Plumbing</option><option>Electrical</option>
+            <option>AC / Cooling</option><option>Furniture</option>
+            <option>Internet</option><option>Cleaning</option>
+            <option>Security</option><option>Other</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label class="modal-lbl">Priority</label>
+          <select class="modal-select" id="am-priority">
+            <option value="Normal">Normal</option>
+            <option value="Urgent">Urgent</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label class="modal-lbl">Assigned To</label>
+          <input type="text" class="modal-input" id="am-assigned" placeholder="Technician name…">
+        </div>
+        <div class="modal-field full">
+          <label class="modal-lbl">Description</label>
+          <textarea class="modal-textarea" id="am-desc" placeholder="Describe the issue in detail…"></textarea>
+        </div>
+        <div class="modal-field full">
+          <label class="modal-lbl">Notes (optional)</label>
+          <textarea class="modal-textarea" id="am-notes" placeholder="Additional notes…" style="min-height:60px"></textarea>
+        </div>
+      </div>
+      <div class="form-status" id="amStatus" role="status"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="ctrl-btn btn-outline" onclick="closeModal('addMaintModal')">Cancel</button>
+      <button class="ctrl-btn btn-teal" onclick="submitMaintenance()">Log Request</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ LOGIN OVERLAY ════ -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo">
+      <img src="../assets/logo/oceanbreeze-logo.webp" alt="Ocean Breeze Luxury Apartments" width="184" height="48" loading="lazy" decoding="async">
+    </div>
+    <h1 class="login-title">Management Portal</h1>
+    <p class="login-sub">Ocean Breeze · Bijilo, The Gambia</p>
+    <div class="login-field">
+      <label class="login-lbl" for="loginUser">Username</label>
+      <input type="text" class="login-input" id="loginUser" placeholder="Username" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label class="login-lbl" for="loginPass">Password</label>
+      <input type="password" class="login-input" id="loginPass" placeholder="Password" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- ════ TOAST ════ -->
+<div id="toast"></div>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbxjRSzm80agLjE0Bi-2u5cxwNYscmYEtfnIZlMh6VzG0uzYcz3GHYCtb2ufOYDpcDuiHQ/exec';
+
+/* ═══ LOGIN ═══ */
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if (u === 'ocean' && p === 'Breeze2026') {
+    document.getElementById('loginOverlay').style.display = 'none';
+    initPortal();
+  } else {
+    document.getElementById('loginErr').textContent = 'Incorrect username or password.';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginPass').focus();
+  }
+}
+
+/* ═══ MOCK DATA (fallback) ═══ */
+const MOCK_BOOKINGS = [
+  { id:0, ref:'OB-240601', guest:'Amara Diallo',    apt:'2BR', aptName:'Bijilo Residence',   checkIn:'2026-07-01', checkOut:'2026-07-08', nights:7, rate:180, total:1260, status:'Confirmed', payment:'Paid',    email:'amara.diallo@example.com', phone:'+220 7226001',      nationality:'Gambian',  guests:2, requests:'Airport pickup, early check-in.', notes:'' },
+  { id:1, ref:'OB-240602', guest:'James Mensah',    apt:'1BR', aptName:'Atlantic Suite',      checkIn:'2026-07-05', checkOut:'2026-07-12', nights:7, rate:120, total:840,  status:'Confirmed', payment:'Paid',    email:'james.mensah@gmail.com',   phone:'+44 7700 900123',   nationality:'British',  guests:1, requests:'Quiet room, top floor.', notes:'VIP.' },
+  { id:2, ref:'OB-240603', guest:'Fatou Camara',    apt:'PH',  aptName:'The Atlantic Crown', checkIn:'2026-07-10', checkOut:'2026-07-17', nights:7, rate:350, total:2450, status:'Pending',   payment:'Pending', email:'fatou.camara@yahoo.com',   phone:'+1 212 555 0182',   nationality:'American', guests:4, requests:'Birthday setup, champagne.', notes:'' },
+  { id:3, ref:'OB-240604', guest:'Olivier Dubois',  apt:'3BR', aptName:'Senegambia Villa',    checkIn:'2026-07-12', checkOut:'2026-07-19', nights:7, rate:250, total:1750, status:'Confirmed', payment:'Partial', email:'o.dubois@gmail.com',       phone:'+33 6 12 34 56 78', nationality:'French',   guests:5, requests:'Extra towels, baby cot.', notes:'$875 deposit paid.' },
+  { id:4, ref:'OB-240605', guest:'Aisha Kouyaté',   apt:'1BR', aptName:'Atlantic Suite',      checkIn:'2026-06-20', checkOut:'2026-06-25', nights:5, rate:120, total:600,  status:'Completed', payment:'Paid',    email:'aisha.k@outlook.com',      phone:'+221 77 123 4567',  nationality:'Senegalese',guests:2, requests:'', notes:'5-star review.' },
+  { id:5, ref:'OB-240606', guest:'Marcus Thompson', apt:'2BR', aptName:'Bijilo Residence',    checkIn:'2026-07-20', checkOut:'2026-07-27', nights:7, rate:180, total:1260, status:'Pending',   payment:'Pending', email:'marcus.t@icloud.com',      phone:'+1 404 555 0193',   nationality:'American', guests:3, requests:'Airport transfer both ways.', notes:'' },
+  { id:6, ref:'OB-240607', guest:'Ngozi Okonkwo',   apt:'PH',  aptName:'The Atlantic Crown', checkIn:'2026-08-01', checkOut:'2026-08-10', nights:9, rate:350, total:3150, status:'Confirmed', payment:'Paid',    email:'ngozi.o@company.ng',       phone:'+234 803 123 4567', nationality:'Nigerian', guests:6, requests:'Butler, chef inquiry.', notes:'High-value. Personal welcome.' },
+  { id:7, ref:'OB-240608', guest:'Lars Eriksson',   apt:'1BR', aptName:'Atlantic Suite',      checkIn:'2026-07-03', checkOut:'2026-07-06', nights:3, rate:120, total:360,  status:'Cancelled', payment:'Refunded',email:'lars.e@gmail.com',          phone:'+46 70 123 4567',   nationality:'Swedish',  guests:1, requests:'Late checkout.', notes:'Refund processed.' },
+  { id:8, ref:'OB-240609', guest:'Binta Jallow',    apt:'3BR', aptName:'Senegambia Villa',    checkIn:'2026-06-15', checkOut:'2026-06-22', nights:7, rate:250, total:1750, status:'Completed', payment:'Overdue', email:'binta.j@gmail.com',        phone:'+220 7771234',      nationality:'Gambian',  guests:4, requests:'', notes:'Balance $875 overdue. URGENT.' },
+  { id:9, ref:'OB-240610', guest:'Sophie Müller',   apt:'2BR', aptName:'Bijilo Residence',    checkIn:'2026-07-25', checkOut:'2026-08-01', nights:7, rate:180, total:1260, status:'Pending',   payment:'Pending', email:'s.muller@web.de',          phone:'+49 176 123 45678', nationality:'German',   guests:2, requests:'Vegetarian setup, yoga mat.', notes:'' },
+];
+
+const MOCK_MAINTENANCE = [
+  { ref:'MR-001', dateLogged:'2026-06-01', unit:'Atlantic Suite (1BR)',    category:'Plumbing',    description:'Bathroom tap dripping',          priority:'Normal', status:'Resolved',    assignedTo:'Ibrahim', resolvedDate:'2026-06-03', notes:'' },
+  { ref:'MR-002', dateLogged:'2026-06-10', unit:'Bijilo Residence (2BR)',  category:'AC / Cooling',description:'AC unit not cooling properly',    priority:'Urgent', status:'In Progress', assignedTo:'Lamine',  resolvedDate:'',           notes:'Compressor issue' },
+  { ref:'MR-003', dateLogged:'2026-06-15', unit:'Common Area',             category:'Electrical',  description:'Pool lights not working',         priority:'Normal', status:'Pending',     assignedTo:'',        resolvedDate:'',           notes:'' },
+  { ref:'MR-004', dateLogged:'2026-06-20', unit:'The Atlantic Crown (PH)', category:'Internet',    description:'WiFi drops in master bedroom',    priority:'Normal', status:'In Progress', assignedTo:'Lamine',  resolvedDate:'',           notes:'' },
+  { ref:'MR-005', dateLogged:'2026-06-22', unit:'Senegambia Villa (3BR)',  category:'Furniture',   description:'Sofa cushion torn',              priority:'Low',    status:'Pending',     assignedTo:'',        resolvedDate:'',           notes:'' },
+];
+
+/* ═══ STATE ═══ */
+let bookings = [];
+let maintenance = [];
+let sortCol = 'checkIn', sortDir = 1;
+let sortMaintCol = 'dateLogged', sortMaintDir = -1;
+let currentBookingId = null;
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+let dataSource = 'mock';
+
+/* ═══ HELPERS ═══ */
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const fmt = d => { if(!d) return '—'; return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); };
+const fmtShort = d => { if(!d) return '—'; return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'}); };
+const today = new Date(); today.setHours(0,0,0,0);
+
+function statusBadge(s) {
+  const m = {Confirmed:'b-confirmed',Pending:'b-pending',Cancelled:'b-cancelled',Completed:'b-completed'};
+  return `<span class="badge ${m[s]||'b-pending'}">${s||'—'}</span>`;
+}
+function payBadge(p) {
+  const m = {Paid:'b-paid',Pending:'b-pending',Overdue:'b-overdue',Partial:'b-partial',Refunded:'b-refunded'};
+  return `<span class="badge ${m[p]||'b-pending'}">${p||'—'}</span>`;
+}
+function prioBadge(p) {
+  const m = {Urgent:'b-urgent',Normal:'b-normal',Low:'b-low'};
+  return `<span class="badge ${m[p]||'b-low'}">${p||'—'}</span>`;
+}
+function maintStatusBadge(s) {
+  const m = {Pending:'b-pending','In Progress':'b-inprog',Resolved:'b-resolved','On Hold':'b-onhold'};
+  return `<span class="badge ${m[s]||'b-pending'}">${s||'—'}</span>`;
+}
+function toast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  const el = document.createElement('div');
+  el.className = `toast-msg t-${type}`;
+  el.textContent = (type==='ok'?'✅ ':'⚠️ ') + msg;
+  t.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+
+/* ═══ API ═══ */
+function apiGet(action, cb) {
+  const cbName = 'obAdminCb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+  const script = document.createElement('script');
+  const timer = setTimeout(() => { cleanup(); cb(null, 'timeout'); }, 12000);
+  function cleanup() {
+    clearTimeout(timer);
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
+  }
+  window[cbName] = result => { cleanup(); cb(result, null); };
+  script.onerror = () => { cleanup(); cb(null, 'error'); };
+  script.src = `${API_URL}?action=${action}&callback=${cbName}`;
+  document.body.appendChild(script);
+}
+
+function apiPost(payload, cb) {
+  fetch(API_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }).then(r => r.json()).then(d => cb(d, null)).catch(e => cb(null, e.message));
+}
+
+function adminUpdateBookingStatus(sel, bookingRef) {
+  const newStatus = sel.value;
+  const indicator = document.getElementById('si-' + bookingRef);
+  apiGet('updateBookingStatus&bookingRef=' + encodeURIComponent(bookingRef) + '&newStatus=' + encodeURIComponent(newStatus), (data, err) => {
+    if (indicator) {
+      indicator.textContent = (!err && data && data.success) ? 'Saved ✓' : '✗ Error';
+      indicator.style.display = 'inline';
+      setTimeout(() => { indicator.style.display = 'none'; }, 2500);
+    }
+    if (!err && data && data.success) {
+      const b = bookings.find(x => (x.ref || '') === bookingRef);
+      if (b) b.status = newStatus;
+      renderOverview();
+    }
+  });
+}
+
+function saveBookingField(el) {
+  const field = el.dataset.field;
+  const ref   = el.dataset.ref;
+  const value = el.textContent.trim();
+  if (!field || !ref) return;
+  apiGet('updateBookingField&bookingRef=' + encodeURIComponent(ref) +
+         '&field=' + encodeURIComponent(field) +
+         '&value=' + encodeURIComponent(value), (data, err) => {
+    if (!err && data && data.success) {
+      el.style.outline = '1px solid var(--ok)';
+      setTimeout(() => { el.style.outline = ''; }, 1500);
+      const b = bookings.find(x => (x.ref || '') === ref);
+      if (b) {
+        if (field === 'GuestName') b.guest   = value;
+        if (field === 'Unit')      b.aptName = value;
+        if (field === 'CheckIn')   b.checkIn  = value;
+        if (field === 'CheckOut')  b.checkOut = value;
+        if (field === 'Phone')     b.phone   = value;
+      }
+    } else {
+      el.style.outline = '1px solid var(--err)';
+      setTimeout(() => { el.style.outline = ''; }, 1500);
+    }
+  });
+}
+
+function adminUpdateMaintenanceStatus(requestRef, newStatus, adminNotes) {
+  apiGet('updateMaintenanceStatus&requestRef=' + encodeURIComponent(requestRef) +
+         '&newStatus=' + encodeURIComponent(newStatus) +
+         '&adminNotes=' + encodeURIComponent(adminNotes || ''), (data, err) => {
+    if (!err && data && data.success) {
+      const m = maintenance.find(x => x.ref === requestRef);
+      if (m) { m.status = newStatus; if (adminNotes !== null) m.adminNotes = adminNotes; }
+      toast(requestRef + ' updated');
+    } else {
+      toast('Update failed', 'err');
+    }
+  });
+}
+
+function refreshData() {
+  apiGet('getBookings', (data, err) => {
+    if (!err && Array.isArray(data) && data.length) {
+      bookings = data.map((b, i) => ({
+        id: i, ref: b.bookingRef || b.ref || '',
+        guest: b.guestName || b.guest || '', apt: '',
+        aptName: b.unit || b.apartment || b.aptName || '',
+        checkIn: b.checkIn || '', checkOut: b.checkOut || '',
+        nights: Number(b.nights) || 0, rate: Number(b.ratePerNight) || Number(b.rate) || 0,
+        total: Number(b.total) || 0, status: b.status || 'Pending',
+        payment: b.paymentMethod || b.payment || 'Pending',
+        email: b.email || '', phone: b.phone || '',
+        nationality: b.nationality || '', guests: b.guests || 1,
+        requests: b.requests || '', notes: b.notes || '',
+      }));
+      dataSource = 'live';
+      renderTable(); renderOverview();
+      toast('Data refreshed');
+    }
+  });
+  apiGet('getMaintenanceRequests', (data, err) => {
+    if (!err && Array.isArray(data) && data.length) {
+      maintenance = data.map(m => ({
+        ref: m.requestRef || m.ref || '', dateLogged: m.dateLogged || '',
+        unit: m.unit || '', category: m.category || '',
+        description: m.description || '', priority: m.priority || 'Normal',
+        status: m.status || 'Pending', assignedTo: m.assignedTo || '',
+        adminNotes: m.adminNotes || '', lastUpdated: m.lastUpdated || '',
+      }));
+      renderMaintenance();
+    }
+  });
+}
+
+/* ═══ INIT (called after login) ═══ */
+function initPortal() {
+  bookings = MOCK_BOOKINGS.map((b,i) => ({...b, id:i}));
+  maintenance = [...MOCK_MAINTENANCE];
+
+  // Populate API URL field in Settings
+  const apiField = document.getElementById('apiUrlField');
+  if (apiField) apiField.value = API_URL;
+
+  renderOverview();
+  renderTable();
+
+  // Try to load live data
+  apiGet('getBookings', (data, err) => {
+    if (!err && Array.isArray(data) && data.length) {
+      bookings = data.map((b, i) => ({
+        id: i,
+        ref: b.bookingRef || b.ref || '',
+        guest: b.guestName || b.guest || '',
+        apt: '',
+        aptName: b.unit || b.apartment || b.aptName || '',
+        checkIn: b.checkIn || '',
+        checkOut: b.checkOut || '',
+        nights: Number(b.nights) || 0,
+        rate: Number(b.ratePerNight) || Number(b.rate) || 0,
+        total: Number(b.total) || 0,
+        status: b.status || 'Pending',
+        payment: b.paymentMethod || b.payment || 'Pending',
+        email: b.email || '',
+        phone: b.phone || '',
+        nationality: b.nationality || '',
+        guests: b.guests || 1,
+        requests: b.requests || '',
+        notes: b.notes || '',
+      }));
+      dataSource = 'live';
+      renderOverview();
+      renderTable();
+      toast('Live booking data loaded');
+    }
+  });
+
+  apiGet('getMaintenanceRequests', (data, err) => {
+    if (!err && Array.isArray(data) && data.length) {
+      maintenance = data.map(m => ({
+        ref:         m.requestRef || m.ref || '',
+        dateLogged:  m.dateLogged || '',
+        unit:        m.unit || '',
+        category:    m.category || '',
+        description: m.description || '',
+        priority:    m.priority || 'Normal',
+        status:      m.status || 'Pending',
+        assignedTo:  m.assignedTo || '',
+        adminNotes:  m.adminNotes || '',
+        lastUpdated: m.lastUpdated || '',
+      }));
+      renderMaintenance();
+    }
+  });
+
+  // True real-time push from Google Sheets to this static GitHub Pages site is not
+  // possible because Sheets cannot initiate HTTP requests to the frontend. The
+  // correct approach is polling: the admin panel periodically calls the Apps Script
+  // API to fetch the latest state. A manual Refresh button is also provided.
+  setInterval(() => {
+    apiGet('getBookings', (data, err) => {
+      if (!err && Array.isArray(data) && data.length) {
+        bookings = data.map((b, i) => ({
+          id: i,
+          ref: b.bookingRef || b.ref || '',
+          guest: b.guestName || b.guest || '',
+          apt: '', aptName: b.unit || b.apartment || b.aptName || '',
+          checkIn: b.checkIn || '', checkOut: b.checkOut || '',
+          nights: Number(b.nights) || 0, rate: Number(b.ratePerNight) || Number(b.rate) || 0,
+          total: Number(b.total) || 0, status: b.status || 'Pending',
+          payment: b.paymentMethod || b.payment || 'Pending',
+          email: b.email || '', phone: b.phone || '',
+          nationality: b.nationality || '', guests: b.guests || 1,
+          requests: b.requests || '', notes: b.notes || '',
+        }));
+        renderTable(); renderOverview();
+      }
+    });
+    apiGet('getMaintenanceRequests', (data, err) => {
+      if (!err && Array.isArray(data) && data.length) {
+        maintenance = data.map(m => ({
+          ref: m.requestRef || m.ref || '', dateLogged: m.dateLogged || '',
+          unit: m.unit || '', category: m.category || '',
+          description: m.description || '', priority: m.priority || 'Normal',
+          status: m.status || 'Pending', assignedTo: m.assignedTo || '',
+          adminNotes: m.adminNotes || '', lastUpdated: m.lastUpdated || '',
+        }));
+      }
+    });
+  }, 60000);
+}
+
+/* ═══ SIDEBAR ═══ */
+document.getElementById('sbNav').addEventListener('click', e => {
+  const item = e.target.closest('.sb-item[data-sec]');
+  if (!item) return;
+  navTo(item.dataset.sec);
+  closeSb();
+});
+function navTo(sec) {
+  document.querySelectorAll('.portal-sec').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sb-item[data-sec]').forEach(a => a.classList.remove('active'));
+  document.getElementById('sec-'+sec).classList.add('active');
+  document.querySelector(`.sb-item[data-sec="${sec}"]`)?.classList.add('active');
+  if (sec === 'calendar')    renderCalendar();
+  if (sec === 'payments')    renderPayments();
+  if (sec === 'overview')    renderOverview();
+  if (sec === 'maintenance') renderMaintenance();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function testApiConnection() {
+  const el = document.getElementById('connStatus');
+  el.innerHTML = '<span style="color:var(--parch-f)">Testing connection…</span>';
+  apiGet('ping', (data, err) => {
+    if (err || !data || !data.ok) {
+      el.innerHTML = '<span style="color:var(--err)">✗ Connection failed. Check the URL and deployment settings.</span>';
+    } else {
+      el.innerHTML = '<span style="color:var(--ok)">✓ Connected — ' + (data.message || 'API is live') + '</span>';
+    }
+  });
+}
+function toggleSb() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sbOverlay').style.display =
+    document.getElementById('sidebar').classList.contains('open') ? 'block' : 'none';
+}
+function closeSb() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sbOverlay').style.display = 'none';
+}
+
+/* ═══ OVERVIEW ═══ */
+function renderOverview() {
+  document.getElementById('overviewDate').textContent =
+    today.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  const active  = bookings.filter(b => b.status==='Confirmed'||b.status==='Pending');
+  const revenue = bookings.filter(b => b.payment==='Paid').reduce((s,b)=>s+b.total,0);
+  const overdue = bookings.filter(b => b.payment==='Overdue'||b.payment==='Pending');
+  const nowY = today.getFullYear(), nowM = today.getMonth();
+  const mStart = `${nowY}-${String(nowM+1).padStart(2,'0')}-01`;
+  const mEnd   = `${nowY}-${String(nowM+2).padStart(2,'0')}-01`;
+  const thisMonthConfirmed = bookings.filter(b =>
+    b.status==='Confirmed' && b.checkIn < mEnd && b.checkOut > mStart);
+  const daysInMonth = new Date(nowY, nowM+1, 0).getDate();
+  const totalNights = thisMonthConfirmed.reduce((s,b)=>{
+    const ci = new Date(b.checkIn+'T00:00:00'), co = new Date(b.checkOut+'T00:00:00');
+    const ms = new Date(mStart), me = new Date(mEnd);
+    return s + Math.max(0,(Math.min(co,me)-Math.max(ci,ms))/86400000);
+  },0);
+  const occ = Math.round(totalNights / (4*daysInMonth) * 100);
+
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card c-teal">
+      <div class="stat-lbl"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Total Bookings</div>
+      <div class="stat-val">${bookings.length}</div>
+      <div class="stat-sub">${active.length} active · ${bookings.filter(b=>b.status==='Cancelled').length} cancelled</div>
+    </div>
+    <div class="stat-card c-gold">
+      <div class="stat-lbl"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Occupancy Rate</div>
+      <div class="stat-val">${occ}%</div>
+      <div class="stat-sub">${MONTHS[nowM]} · 4 apartments</div>
+    </div>
+    <div class="stat-card c-teal">
+      <div class="stat-lbl"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Revenue Collected</div>
+      <div class="stat-val">$${revenue.toLocaleString()}</div>
+      <div class="stat-sub">Paid bookings only</div>
+    </div>
+    <div class="stat-card c-err">
+      <div class="stat-lbl"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Pending Payments</div>
+      <div class="stat-val">${overdue.length}</div>
+      <div class="stat-sub">${bookings.filter(b=>b.payment==='Overdue').length} overdue · ${bookings.filter(b=>b.payment==='Pending').length} awaiting</div>
+    </div>`;
+
+  const recent = [...bookings].sort((a,b)=>b.ref.localeCompare(a.ref)).slice(0,5);
+  document.getElementById('recentBookings').innerHTML = recent.map(b=>`
+    <div class="drow" style="cursor:pointer" onclick="openGuestModal(${b.id})">
+      <div>
+        <div style="font-size:.78rem;font-weight:500;color:var(--parch)">${b.guest}</div>
+        <div style="font-size:.68rem;color:var(--parch-f)">${b.ref} · ${b.aptName}</div>
+      </div>${statusBadge(b.status)}
+    </div>`).join('');
+
+  const alerts = bookings.filter(b=>b.payment==='Overdue'||b.payment==='Pending');
+  document.getElementById('paymentAlerts').innerHTML = alerts.length ? alerts.map(b=>`
+    <div class="drow" style="cursor:pointer;${b.payment==='Overdue'?'background:rgba(224,108,108,.04)':''}" onclick="openGuestModal(${b.id})">
+      <div>
+        <div style="font-size:.78rem;font-weight:500;color:${b.payment==='Overdue'?'var(--err)':'var(--parch)'}">${b.guest}</div>
+        <div style="font-size:.68rem;color:var(--parch-f)">${b.ref} · $${b.total.toLocaleString()}</div>
+      </div>${payBadge(b.payment)}
+    </div>`).join('')
+    : `<div style="font-size:.8rem;color:var(--parch-f);padding:.75rem 0">No pending payment issues.</div>`;
+}
+
+/* ═══ BOOKINGS TABLE ═══ */
+function getFiltered() {
+  const q  = (document.getElementById('searchInp')?.value||'').trim().toLowerCase();
+  const st = document.getElementById('statusFilter')?.value || '';
+  const from = document.getElementById('dateFrom')?.value || '';
+  const to   = document.getElementById('dateTo')?.value   || '';
+  return bookings.filter(b => {
+    if (q  && !b.guest.toLowerCase().includes(q) && !b.ref.toLowerCase().includes(q)) return false;
+    if (st && b.status !== st) return false;
+    if (from && b.checkIn < from) return false;
+    if (to   && b.checkIn > to)   return false;
+    return true;
+  }).sort((a,b) => {
+    let va = a[sortCol], vb = b[sortCol];
+    if (sortCol==='total'||sortCol==='nights') { va=+va; vb=+vb; }
+    if (va < vb) return -sortDir;
+    if (va > vb) return sortDir;
+    return 0;
+  });
+}
+
+function renderTable() {
+  const rows = getFiltered();
+  const body = document.getElementById('bookingsTbody');
+  if (!rows.length) {
+    body.innerHTML = `<tr><td colspan="10" class="tbl-empty"><div class="tbl-empty-ico">📋</div><div class="tbl-empty-txt">No bookings match your filters.</div></td></tr>`;
+    document.getElementById('tableCount').textContent = '';
+    return;
+  }
+  body.innerHTML = rows.map(b => {
+    const isOverdue = b.payment === 'Overdue';
+    const canExtend = b.status === 'Confirmed' || b.status === 'Pending';
+    const statusOpts = ['Pending','Confirmed','Checked In','Checked Out','Cancelled']
+      .map(s => `<option value="${s}"${b.status===s?' selected':''}>${s}</option>`).join('');
+    return `<tr class="tbl-row${isOverdue?' overdue-row':''}">
+      <td><span class="ref-cell">${b.ref}</span></td>
+      <td><span class="guest-cell" contenteditable="true" data-field="GuestName" data-ref="${b.ref}"
+          onblur="saveBookingField(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"
+          >${b.guest}</span></td>
+      <td style="color:var(--parch)" contenteditable="true" data-field="Unit" data-ref="${b.ref}"
+          onblur="saveBookingField(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">
+        ${b.aptName}</td>
+      <td contenteditable="true" data-field="CheckIn" data-ref="${b.ref}"
+          onblur="saveBookingField(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">
+        ${fmtShort(b.checkIn)}</td>
+      <td contenteditable="true" data-field="CheckOut" data-ref="${b.ref}"
+          onblur="saveBookingField(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">
+        ${fmtShort(b.checkOut)}</td>
+      <td>${b.nights}</td>
+      <td><span class="amount-cell">$${(b.total||0).toLocaleString()}</span></td>
+      <td>
+        <select class="inline-status-sel" onchange="adminUpdateBookingStatus(this,'${b.ref}')"
+          style="font-size:.75rem;padding:3px 6px;border-radius:5px;border:1px solid rgba(255,255,255,.12);background:var(--card);color:var(--parch);cursor:pointer">
+          ${statusOpts}
+        </select>
+        <span class="save-indicator" id="si-${b.ref}" style="font-size:.7rem;color:var(--ok);display:none;margin-left:4px"></span>
+      </td>
+      <td>${payBadge(b.payment)}</td>
+      <td><div class="act-btns">
+        ${canExtend?`<button class="act-btn act-extend" onclick="openExtend(${b.id})"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Extend</button>`:''}
+        <button class="act-btn act-view" onclick="openGuestModal(${b.id})"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>View</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('tableCount').textContent =
+    `Showing ${rows.length} of ${bookings.length} bookings${dataSource==='live'?' · Live data':' · Demo data'}`;
+}
+
+function sortBy(col) {
+  if (sortCol === col) sortDir = -sortDir; else { sortCol = col; sortDir = 1; }
+  renderTable();
+}
+function clearFilters() {
+  document.getElementById('searchInp').value='';
+  document.getElementById('statusFilter').value='';
+  document.getElementById('dateFrom').value='';
+  document.getElementById('dateTo').value='';
+  renderTable();
+}
+
+/* ═══ BOOKING ACTIONS ═══ */
+function confirmBooking(id) {
+  const b = bookings[id];
+  openActionModal(`Confirm ${b.ref}?`,
+    `Confirming *${b.guest}*'s booking for ${b.aptName} (${fmt(b.checkIn)} → ${fmt(b.checkOut)}).`,
+    () => { bookings[id].status='Confirmed'; toast(`${b.ref} confirmed`); renderTable(); renderOverview(); });
+}
+function cancelBooking(id) {
+  const b = bookings[id];
+  openActionModal(`Cancel ${b.ref}?`,
+    `Cancelling *${b.guest}*'s booking. Refund must be processed manually.`,
+    () => { bookings[id].status='Cancelled'; if(bookings[id].payment==='Paid') bookings[id].payment='Refunded'; toast(`${b.ref} cancelled`,'err'); renderTable(); renderOverview(); }, true);
+}
+function openActionModal(title, msg, onConfirm, danger=false) {
+  document.getElementById('actionTitle').textContent = title;
+  document.getElementById('actionMsg').innerHTML = msg.replace(/\*(.*?)\*/g,'<strong>$1</strong>');
+  const btn = document.getElementById('actionConfirmBtn');
+  btn.textContent = danger ? 'Yes, Cancel' : 'Confirm';
+  btn.className = `ctrl-btn ${danger?'btn-outline':'btn-teal'}`;
+  btn.style.color = danger ? 'var(--err)' : '';
+  btn.style.borderColor = danger ? 'rgba(224,108,108,.3)' : '';
+  btn.onclick = () => { onConfirm(); closeModal('actionModal'); };
+  openModal('actionModal');
+}
+
+/* ═══ EXTEND STAY ═══ */
+function openExtend(id) {
+  currentBookingId = id;
+  const b = bookings[id];
+  document.getElementById('extend-info').innerHTML = `
+    <div class="drow"><span class="drow-lbl">Guest</span><span class="drow-val">${b.guest}</span></div>
+    <div class="drow"><span class="drow-lbl">Apartment</span><span class="drow-val">${b.aptName}</span></div>
+    <div class="drow"><span class="drow-lbl">Current Check-out</span><span class="drow-val teal">${fmt(b.checkOut)}</span></div>
+    <div class="drow"><span class="drow-lbl">Rate</span><span class="drow-val">$${b.rate}/night</span></div>`;
+  const inp = document.getElementById('newCheckout');
+  inp.min = b.checkOut; inp.value = '';
+  document.getElementById('extendCalc').innerHTML = '<div style="font-size:.78rem;color:var(--parch-f)">Select a new check-out date.</div>';
+  openModal('extendModal');
+}
+function calcExtend() {
+  if (currentBookingId === null) return;
+  const b = bookings[currentBookingId];
+  const newCO = document.getElementById('newCheckout').value;
+  if (!newCO || newCO <= b.checkOut) {
+    document.getElementById('extendCalc').innerHTML = '<div style="font-size:.78rem;color:var(--err)">Date must be after current check-out.</div>';
+    return;
+  }
+  const extra = Math.round((new Date(newCO+'T00:00:00') - new Date(b.checkOut+'T00:00:00')) / 86400000);
+  const extraCost = extra * b.rate;
+  document.getElementById('extendCalc').innerHTML = `
+    <div class="extend-row"><span>Original total</span><span>$${b.total.toLocaleString()}</span></div>
+    <div class="extend-row"><span>Extension (${extra} night${extra!==1?'s':''})</span><span>+$${extraCost.toLocaleString()}</span></div>
+    <div class="extend-row total"><span>New total</span><span>$${(b.total+extraCost).toLocaleString()}</span></div>`;
+}
+function confirmExtend() {
+  if (currentBookingId === null) return;
+  const b = bookings[currentBookingId];
+  const newCO = document.getElementById('newCheckout').value;
+  if (!newCO || newCO <= b.checkOut) { toast('Select a valid date.','err'); return; }
+  const extra = Math.round((new Date(newCO+'T00:00:00') - new Date(b.checkOut+'T00:00:00')) / 86400000);
+  bookings[currentBookingId].checkOut = newCO;
+  bookings[currentBookingId].nights += extra;
+  bookings[currentBookingId].total  += extra * b.rate;
+  if (bookings[currentBookingId].payment==='Paid') bookings[currentBookingId].payment='Partial';
+  toast(`${b.ref} extended to ${fmt(newCO)}`);
+  closeModal('extendModal');
+  renderTable(); renderOverview();
+}
+
+/* ═══ GUEST MODAL ═══ */
+function openGuestModal(id) {
+  currentBookingId = id;
+  const b = bookings[id];
+  document.getElementById('gm-ref').textContent  = b.ref;
+  document.getElementById('gm-name').textContent = b.guest;
+  document.getElementById('gm-details').innerHTML = `
+    <div class="drow"><span class="drow-lbl">Apartment</span><span class="drow-val">${b.aptName}</span></div>
+    <div class="drow"><span class="drow-lbl">Check-in</span><span class="drow-val">${fmt(b.checkIn)}</span></div>
+    <div class="drow"><span class="drow-lbl">Check-out</span><span class="drow-val">${fmt(b.checkOut)}</span></div>
+    <div class="drow"><span class="drow-lbl">Duration</span><span class="drow-val">${b.nights} nights</span></div>
+    <div class="drow"><span class="drow-lbl">Rate</span><span class="drow-val">$${b.rate}/night</span></div>
+    <div class="drow"><span class="drow-lbl">Total</span><span class="drow-val teal">$${(b.total||0).toLocaleString()}</span></div>
+    <div class="drow"><span class="drow-lbl">Status</span><span class="drow-val">${statusBadge(b.status)}</span></div>
+    <div class="drow"><span class="drow-lbl">Payment</span><span class="drow-val">${payBadge(b.payment)}</span></div>`;
+  document.getElementById('gm-guest').innerHTML = `
+    <div class="drow"><span class="drow-lbl">Nationality</span><span class="drow-val">${b.nationality||'—'}</span></div>
+    <div class="drow"><span class="drow-lbl">Guests</span><span class="drow-val">${b.guests||'—'}</span></div>
+    <div class="drow"><span class="drow-lbl">Email</span><span class="drow-val" style="font-size:.75rem">${b.email||'—'}</span></div>
+    <div class="drow"><span class="drow-lbl">Phone</span><span class="drow-val">${b.phone||'—'}</span></div>`;
+  const wa = (b.phone||'').replace(/\D/g,'');
+  document.getElementById('gm-contacts').innerHTML = `
+    <a href="mailto:${b.email||''}" class="cbtn cbtn-email">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;stroke-linecap:round;stroke-linejoin:round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Email Guest
+    </a>
+    <a href="https://wa.me/${wa}" target="_blank" rel="noopener" class="cbtn cbtn-wa">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a4.1 4.1 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+      WhatsApp
+    </a>`;
+  document.getElementById('gm-requests').textContent = b.requests || 'No special requests.';
+  document.getElementById('gm-notes').value = b.notes || '';
+  const confirmBtn = document.getElementById('gm-confirm-btn');
+  confirmBtn.style.display = b.status==='Pending' ? 'inline-flex' : 'none';
+  openModal('guestModal');
+}
+function saveNotes() {
+  if (currentBookingId === null) return;
+  bookings[currentBookingId].notes = document.getElementById('gm-notes').value;
+  toast('Notes saved');
+}
+function confirmFromModal() { confirmBooking(currentBookingId); closeModal('guestModal'); }
+
+/* ═══ MODALS ═══ */
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+window.addEventListener('keydown', e => {
+  if (e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));
+});
+
+/* ═══ CALENDAR ═══ */
+function renderCalendar() {
+  const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  document.getElementById('calMonthLbl').textContent = `${MONTHS[calMonth]} ${calYear}`;
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMo = new Date(calYear, calMonth+1, 0).getDate();
+  const todayStr = today.toISOString().split('T')[0];
+  let html = DAYS.map(d=>`<div class="cal-wd">${d}</div>`).join('');
+  for(let i=0;i<firstDay;i++) html+=`<div class="cal-day other-month"></div>`;
+  for(let d=1;d<=daysInMo;d++) {
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = dateStr===todayStr;
+    const dayB = bookings.filter(b=>b.checkIn<=dateStr&&b.checkOut>dateStr);
+    const chips = dayB.map(b=>{
+      const cls = {Confirmed:'cal-b-confirmed',Pending:'cal-b-pending',Cancelled:'cal-b-cancelled',Completed:'cal-b-completed'}[b.status]||'cal-b-pending';
+      const short = b.aptName.replace('The Atlantic Crown','PH').replace('Bijilo Residence','2BR').replace('Senegambia Villa','3BR').replace('Atlantic Suite','1BR');
+      return `<div class="${cls} cal-booking" onclick="openGuestModal(${b.id})" title="${b.guest}">${short} · ${b.guest.split(' ')[0]}</div>`;
+    }).join('');
+    html+=`<div class="cal-day${isToday?' today':''}"><div class="cal-day-num">${d}</div>${chips}</div>`;
+  }
+  const rem = (7-(firstDay+daysInMo)%7)%7;
+  for(let i=0;i<rem;i++) html+=`<div class="cal-day other-month"></div>`;
+  document.getElementById('calGrid').innerHTML = `<div class="cal-grid">${html}</div>`;
+}
+function calPrev() { if(calMonth===0){calMonth=11;calYear--;}else calMonth--; renderCalendar(); }
+function calNext() { if(calMonth===11){calMonth=0;calYear++;}else calMonth++; renderCalendar(); }
+
+/* ═══ PAYMENTS ═══ */
+function renderPayments() {
+  const totalRev = bookings.filter(b=>b.payment==='Paid').reduce((s,b)=>s+b.total,0);
+  const pending  = bookings.filter(b=>b.payment==='Pending'||b.payment==='Partial').reduce((s,b)=>s+b.total,0);
+  const overdue  = bookings.filter(b=>b.payment==='Overdue').reduce((s,b)=>s+b.total,0);
+  document.getElementById('paySummary').innerHTML = `
+    <div class="pay-sum-cell"><div class="pay-sum-lbl">Total Collected</div><div class="pay-sum-val" style="color:var(--teal)">$${totalRev.toLocaleString()}</div></div>
+    <div class="pay-sum-cell"><div class="pay-sum-lbl">Pending / Partial</div><div class="pay-sum-val" style="color:var(--warn)">$${pending.toLocaleString()}</div></div>
+    <div class="pay-sum-cell"><div class="pay-sum-lbl">Overdue</div><div class="pay-sum-val" style="color:var(--err)">$${overdue.toLocaleString()}</div></div>`;
+  const sorted = [...bookings].sort((a,b)=>({Overdue:0,Pending:1,Partial:2,Paid:3,Refunded:4}[a.payment]||5)-({Overdue:0,Pending:1,Partial:2,Paid:3,Refunded:4}[b.payment]||5));
+  document.getElementById('payTbody').innerHTML = sorted.map(b=>`
+    <tr class="tbl-row${b.payment==='Overdue'?' overdue-row':''}">
+      <td><span class="ref-cell">${b.ref}</span></td>
+      <td><span class="guest-cell">${b.guest}</span></td>
+      <td>${b.aptName}</td><td>${fmtShort(b.checkIn)}</td>
+      <td><span class="amount-cell">$${(b.total||0).toLocaleString()}</span></td>
+      <td>${payBadge(b.payment)}</td>
+      <td><div class="act-btns">
+        ${b.payment!=='Paid'&&b.payment!=='Refunded'?`<button class="act-btn act-confirm" onclick="markPaid(${b.id})">✅ Mark Paid</button>`:''}
+        <button class="act-btn act-view" onclick="openGuestModal(${b.id})">View</button>
+      </div></td>
+    </tr>`).join('');
+}
+function markPaid(id) {
+  bookings[id].payment='Paid';
+  toast(`${bookings[id].ref} marked as paid`);
+  renderPayments(); renderOverview();
+}
+
+/* ═══ MAINTENANCE ═══ */
+function getMaintFiltered() {
+  const q  = (document.getElementById('maintSearch')?.value||'').trim().toLowerCase();
+  const st = document.getElementById('maintStatus')?.value||'';
+  const un = document.getElementById('maintUnit')?.value||'';
+  return maintenance.filter(m=>{
+    if(q && !m.unit.toLowerCase().includes(q) && !m.description.toLowerCase().includes(q) && !m.ref.toLowerCase().includes(q)) return false;
+    if(st && m.status!==st) return false;
+    if(un && m.unit!==un) return false;
+    return true;
+  }).sort((a,b)=>{
+    let va=a[sortMaintCol]||'', vb=b[sortMaintCol]||'';
+    if(va<vb) return -sortMaintDir; if(va>vb) return sortMaintDir; return 0;
+  });
+}
+
+function renderMaintenance() {
+  const rows = getMaintFiltered();
+  const pending   = maintenance.filter(m=>m.status==='Pending').length;
+  const inprog    = maintenance.filter(m=>m.status==='In Progress').length;
+  const resolved  = maintenance.filter(m=>m.status==='Resolved').length;
+  const urgent    = maintenance.filter(m=>m.priority==='Urgent'&&m.status!=='Resolved').length;
+
+  document.getElementById('maintStats').innerHTML = `
+    <div class="maint-stat"><div class="maint-stat-lbl">Pending</div><div class="maint-stat-val" style="color:var(--warn)">${pending}</div></div>
+    <div class="maint-stat"><div class="maint-stat-lbl">In Progress</div><div class="maint-stat-val" style="color:var(--gold)">${inprog}</div></div>
+    <div class="maint-stat"><div class="maint-stat-lbl">Resolved</div><div class="maint-stat-val" style="color:var(--ok)">${resolved}</div></div>
+    <div class="maint-stat"><div class="maint-stat-lbl">Urgent Open</div><div class="maint-stat-val" style="color:var(--err)">${urgent}</div></div>`;
+
+  const body = document.getElementById('maintTbody');
+  if(!rows.length){
+    body.innerHTML=`<tr><td colspan="9" class="tbl-empty"><div class="tbl-empty-ico">🔧</div><div class="tbl-empty-txt">No maintenance requests match your filters.</div></td></tr>`;
+    return;
+  }
+  body.innerHTML = rows.map((m,i)=>{
+    const statusOpts = ['Pending','In Progress','Resolved']
+      .map(s=>`<option value="${s}"${m.status===s?' selected':''}>${s}</option>`).join('');
+    return `<tr class="tbl-row">
+      <td><span class="ref-cell">${m.ref}</span></td>
+      <td>${fmtShort(m.dateLogged)}</td>
+      <td style="color:var(--parch);font-weight:400">${m.unit}</td>
+      <td>${m.category}</td>
+      <td style="max-width:180px;white-space:normal;font-size:.78rem">${m.description}</td>
+      <td>${prioBadge(m.priority)}</td>
+      <td>
+        <select class="inline-status-sel" onchange="adminUpdateMaintenanceStatus('${m.ref}',this.value,null)"
+          style="font-size:.75rem;padding:3px 6px;border-radius:5px;border:1px solid rgba(255,255,255,.12);background:var(--card);color:var(--parch);cursor:pointer">
+          ${statusOpts}
+        </select>
+      </td>
+      <td>
+        <input type="text" value="${(m.adminNotes||'').replace(/"/g,'&quot;')}"
+          placeholder="Add note…"
+          onblur="adminUpdateMaintenanceStatus('${m.ref}',this.closest('tr').querySelector('select').value,this.value)"
+          style="background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.12);color:var(--parch);font-size:.78rem;width:140px;outline:none;padding:2px 4px">
+      </td>
+      <td>${m.assignedTo||'<span style="color:var(--parch-f)">—</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function resolveMaintenance(i) {
+  const rows = getMaintFiltered();
+  const m = rows[i];
+  const idx = maintenance.findIndex(x=>x.ref===m.ref);
+  if(idx>=0) maintenance[idx].status='Resolved';
+  adminUpdateMaintenanceStatus(m.ref, 'Resolved', m.adminNotes || '');
+  renderMaintenance();
+}
+function startMaintenance(i) {
+  const rows = getMaintFiltered();
+  const m = rows[i];
+  const idx = maintenance.findIndex(x=>x.ref===m.ref);
+  if(idx>=0) maintenance[idx].status='In Progress';
+  adminUpdateMaintenanceStatus(m.ref, 'In Progress', m.adminNotes || '');
+  renderMaintenance();
+}
+function sortMaint(col) {
+  if(sortMaintCol===col) sortMaintDir=-sortMaintDir; else{sortMaintCol=col;sortMaintDir=1;}
+  renderMaintenance();
+}
+function clearMaintFilters() {
+  document.getElementById('maintSearch').value='';
+  document.getElementById('maintStatus').value='';
+  document.getElementById('maintUnit').value='';
+  renderMaintenance();
+}
+
+function submitMaintenance() {
+  const unit = document.getElementById('am-unit').value;
+  const cat  = document.getElementById('am-cat').value;
+  const desc = document.getElementById('am-desc').value.trim();
+  const st = document.getElementById('amStatus');
+  if(!unit||!cat||!desc){ st.textContent='Please fill in Unit, Category and Description.'; st.classList.add('show'); return; }
+  st.classList.remove('show');
+
+  const payload = {
+    action:'submitMaintenance',
+    unit, category:cat,
+    description:desc,
+    priority:document.getElementById('am-priority').value,
+    assignedTo:document.getElementById('am-assigned').value.trim(),
+    notes:document.getElementById('am-notes').value.trim(),
+  };
+
+  // Add to local state immediately
+  const tempRef = 'MR-' + Date.now().toString().slice(-6);
+  maintenance.unshift({
+    ref: tempRef,
+    dateLogged: new Date().toISOString().split('T')[0],
+    unit, category:cat, description:desc,
+    priority: payload.priority,
+    status: 'Pending',
+    assignedTo: payload.assignedTo,
+    resolvedDate:'', notes:payload.notes,
+  });
+  closeModal('addMaintModal');
+  renderMaintenance();
+  toast('Maintenance request logged');
+
+  // Also send to Google Sheet if possible
+  apiPost(payload, (result) => {
+    if(result && result.ok) {
+      const idx = maintenance.findIndex(m=>m.ref===tempRef);
+      if(idx>=0) maintenance[idx].ref = result.ref || tempRef;
+    }
+  });
+
+  // Reset form
+  ['am-unit','am-cat','am-desc','am-assigned','am-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('am-priority').value='Normal';
+}
+
+/* ═══ CSV EXPORT ═══ */
+function exportCSV() {
+  const hdrs = ['Booking Ref','Guest Name','Apartment','Check-in','Check-out','Nights','Total (USD)','Status','Payment','Email','Phone'];
+  const rows = getFiltered().map(b=>[
+    b.ref,`"${b.guest}"`,`"${b.aptName}"`,b.checkIn,b.checkOut,b.nights,b.total,b.status,b.payment,b.email||'',b.phone||''
+  ]);
+  const csv = [hdrs.join(','),...rows.map(r=>r.join(','))].join('\n');
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='ocean-breeze-bookings.csv'; a.click();
+  URL.revokeObjectURL(url);
+  toast('CSV exported');
+}
+
+/* ═══ INIT ═══ */
+// Login screen shows first — portal initialises after successful login
+</script>
+<div style="position:fixed;bottom:.7rem;left:50%;transform:translateX(-50%);z-index:50;pointer-events:none">
+  <a href="https://umojaserv.com/" target="_blank" rel="noopener"
+    style="font-size:.58rem;letter-spacing:.06em;color:rgba(232,226,212,.15);text-decoration:none;pointer-events:all;transition:color .3s"
+    onmouseover="this.style.color='rgba(232,226,212,.4)'" onmouseout="this.style.color='rgba(232,226,212,.15)'">
+    Site by https://umojaserv.com/
+  </a>
+</div>
+</body>
+</html>
